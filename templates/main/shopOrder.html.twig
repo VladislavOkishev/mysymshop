@@ -1,0 +1,21 @@
+{% extends '/base.html.twig' %}
+
+{% block body %}
+<h1 class="text-center">Order</h1>
+{{ form_start(form) }}
+<div class="form-label-group">
+    {{ form_row(form.fullname) }}
+</div>
+<div class="form-label-group">
+    {{ form_row(form.phone) }}
+</div>
+<div class="form-label-group">
+    {{ form_row(form.email) }}
+</div>
+<div class="form-label-group mt-3 text-center">
+    {{ form_row(form.save) }}
+</div>
+{{ form_end(form) }}
+{% endblock %}
+
+

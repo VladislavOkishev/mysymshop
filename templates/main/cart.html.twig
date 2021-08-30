@@ -1,0 +1,70 @@
+{% extends '/base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Your Cart</h1>
+    {% if products|length > 0 %}
+        <div class="row mt-4">
+            {% for product in products %}
+                <div class="col-md-12 mb-2">
+                    <div class="card mb-12 shadow-sm">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="col-3"><a href="{{ path('shop_item', { id: product.id }) }}"><h5>{{ product.title }}</h5></a></div>
+                            <div class="col-2 font-weight-bold d-flex justify-content-between">
+                                <button class="fa fa-minus text-danger minus-btn" name="{{ product.id }}"></button>
+                                <input type="number" class="amount" style=" width:100px; text-align: center" value="{{ product.count }}" disabled>
+                                <button class="fa fa-plus plus-btn text-success" name="{{ product.id }}"></button></div>
+                            <div class="col-1">{{ product.price }} UAH</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row d-flex justify-content-center align-items-center mt-4">
+                <div class="col-3 text-center align-middle"><h4 class="m-0">Total price: {{totalPrice}} UAH</h4></div>
+                <div class="col-3 text-center align-middle"><a href="{{ path('shop_order') }}" class="btn btn-success">Checkout</a></div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-dark">
+            Ah, you didn't buy anything. Pls, <a href="{{ path('shop') }}">return to the shop </a>and buy something😘
+        </div>
+    {% endif %}
+</div>
+    <script>
+        $('.minus-btn').on('click', function(e) {
+            let countItem = $(this).siblings('.amount');
+
+            if(countItem.val() <= 1){
+                countItem.val(1);
+            }
+            else
+                countItem.val(parseInt(countItem.val())-1);
+
+            $.ajax({
+                url: "/cart/changeAmount/"+$(this).prop("name"),
+                data: { operation: 'minus'},
+                error: function(xhr, error){
+                    console.debug(xhr);
+                    console.debug(error);
+                }
+            });
+        });
+        $('.plus-btn').on('click', function(e) {
+            let countItem = $(this).siblings('.amount');
+            countItem.val(parseInt(countItem.val())+1);
+
+            $.ajax({
+                url: "/cart/changeAmount/"+$(this).prop("name"),
+                data: { operation: 'plus'},
+                error: function(xhr, error){
+                    console.debug(xhr);
+                    console.debug(error);
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
+
+
+
