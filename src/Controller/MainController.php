@@ -3,10 +3,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Clients;
-use App\Entity\Orders;
-use App\Entity\OrdersProducts;
-use App\Entity\Products;
+use App\Entity\Client;
+use App\Entity\Order1;
+use App\Entity\OrderProduct;
+use App\Entity\Product;
 use App\Form\OrderFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -35,9 +35,8 @@ class MainController extends AbstractController
      */
     public function home(EntityManagerInterface $entityManager)
     {
-        $repository = $entityManager->getRepository(Products::class);
+        $repository = $entityManager->getRepository(Product::class);
         $products = $repository->findAll();
-
 
 
         return $this->render('main/home.html.twig', [
@@ -53,7 +52,7 @@ class MainController extends AbstractController
      */
     public function item($id, EntityManagerInterface $entityManager)
     {
-        $repository = $entityManager->getRepository(Products::class);
+        $repository = $entityManager->getRepository(Product::class);
         $item = $repository->findOneBy(['id'=>$id]);
         if (!$item) {
             throw $this->createNotFoundException(sprintf('No item found('));
@@ -74,7 +73,7 @@ class MainController extends AbstractController
     {
         $session = $this->requestStack->getSession();
 
-        $repository = $entityManager->getRepository(Products::class);
+        $repository = $entityManager->getRepository(Product::class);
         $item = $repository->findOneBy(['id'=>$id]);
 
         $cart = $session->get('cart');
@@ -99,7 +98,7 @@ class MainController extends AbstractController
         $session = $this->requestStack->getSession();
         $cart = $session->get('cart');
 
-        $repository = $entityManager->getRepository(Products::class);
+        $repository = $entityManager->getRepository(Product::class);
 
         $products = [];
 
@@ -150,10 +149,10 @@ class MainController extends AbstractController
      */
     public function createOrder(Request $request, EntityManagerInterface $entityManager)
     {
-        $client = new Clients();
-        $order = new Orders();
+        $client = new Client();
+        $order = new Order1();
 
-        $repository = $entityManager->getRepository(Products::class);
+        $repository = $entityManager->getRepository(Product::class);
 
         $session = $this->requestStack->getSession();
         $form = $this->createForm(OrderFormType::class, $client);
@@ -162,25 +161,25 @@ class MainController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $client = $form->getData();
-            if ($client instanceof Clients) {
+            if ($client instanceof Client) {
 
                 $entityManager = $this->getDoctrine()->getManager();
 
                 $entityManager->persist($client);
                 $entityManager->flush();
 
-                $order->setCustomerId($client);
+                $order->setCustomer($client);
                 $order->setDateOrder(new \DateTime());
 
                 $entityManager->persist($order);
                 $entityManager->flush();
 
                 foreach($cart as $id=>$value){
-                    $order_products = new OrdersProducts();
-                    $order_products->setOrderId($order);
+                    $order_products = new OrderProduct();
+                    $order_products->setOrder1($order);
                     $order_products->setAmount($value['count']);
                     $item = $repository->find($id);
-                    $order_products->setProductId($item);
+                    $order_products->setProduct($item);
                     $entityManager->persist($order_products);
                     $entityManager->flush();
                 }

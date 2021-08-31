@@ -2,15 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ProductsRepository::class)
+ * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
-class Products
+class Product
 {
     /**
      * @ORM\Id
@@ -20,7 +18,7 @@ class Products
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     private $title;
 
@@ -47,27 +45,17 @@ class Products
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $mother_chipset;
+    private $motherChipset;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $amount_ram;
+    private $amountRam;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
     private $videocard;
-
-    /**
-     * @ORM\OneToMany(targetEntity=OrdersProducts::class, mappedBy="product_id")
-     */
-    private $ordersProducts;
-
-    public function __construct()
-    {
-        $this->ordersProducts = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -136,24 +124,24 @@ class Products
 
     public function getMotherChipset(): ?string
     {
-        return $this->mother_chipset;
+        return $this->motherChipset;
     }
 
-    public function setMotherChipset(string $mother_chipset): self
+    public function setMotherChipset(string $motherChipset): self
     {
-        $this->mother_chipset = $mother_chipset;
+        $this->motherChipset = $motherChipset;
 
         return $this;
     }
 
     public function getAmountRam(): ?string
     {
-        return $this->amount_ram;
+        return $this->amountRam;
     }
 
-    public function setAmountRam(string $amount_ram): self
+    public function setAmountRam(string $amountRam): self
     {
-        $this->amount_ram = $amount_ram;
+        $this->amountRam = $amountRam;
 
         return $this;
     }
@@ -166,36 +154,6 @@ class Products
     public function setVideocard(string $videocard): self
     {
         $this->videocard = $videocard;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|OrdersProducts[]
-     */
-    public function getOrdersProducts(): Collection
-    {
-        return $this->ordersProducts;
-    }
-
-    public function addOrdersProduct(OrdersProducts $ordersProduct): self
-    {
-        if (!$this->ordersProducts->contains($ordersProduct)) {
-            $this->ordersProducts[] = $ordersProduct;
-            $ordersProduct->setProductId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrdersProduct(OrdersProducts $ordersProduct): self
-    {
-        if ($this->ordersProducts->removeElement($ordersProduct)) {
-            // set the owning side to null (unless already changed)
-            if ($ordersProduct->getProductId() === $this) {
-                $ordersProduct->setProductId(null);
-            }
-        }
 
         return $this;
     }

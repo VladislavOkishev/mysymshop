@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Clients;
+use App\Entity\Client;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,7 +29,7 @@ class OrderFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Clients::class,
+            'data_class' => Client::class,
         ]);
     }
 }
